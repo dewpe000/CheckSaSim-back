@@ -58,7 +58,7 @@ const sql_survey_answer_insert = (survey : Survey)  :string =>{
     insert into survey_answers
     (survey_id, answers)
     values 
-    (${survey.id},${db.escapeLiteral(survey.answers.join(','))})
+    (${survey.id},${db.escapeLiteral(answers.join(','))})
     `
 }
 
