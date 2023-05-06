@@ -11,7 +11,8 @@ router.post('/login', async(req : Request, res : Response) => {
     const user : User = req.body;
     const sql : string = sql_user_login(user);
     const is_exist = (await db.query(sql)).rows;
-    if (is_exist.length > 0) {
+    console.log(is_exist)
+    if (is_exist.length!=0) {
       const privateKey = Math.floor(Math.random() * 1000000000);
       console.log(privateKey);
       session[privateKey] = user;
