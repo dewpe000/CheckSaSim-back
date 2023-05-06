@@ -34,6 +34,60 @@ const sql_survey_list = ()  :string =>{
     `
 }
 
+const sql_survey_retrieve = (sid : number)  :string =>{
+    return `
+    select
+        s.id,
+        s.title,
+        s.week_num,
+        s.type,
+        to_char(s.created_on, 'YYYY-MM-DD') as created,
+        JSON_AGG(
+                JSON_BUILD_OBJECT(
+                        'id', sq.id,
+                        'body', body,
+                        'is_reverse', is_reverse,
+                        'type', sq.type
+                    )
+            ) as questions
+    from surveys s
+    inner join surveys_questions sq on s.id = sq.survey_id
+    where s.id = ${sid}
+    group by s.id;
+    `
+}
+
+const sql_survey_insert = (sid : number)  :string =>{
+    return `
+    select
+        s.id,
+        s.title,
+        s.week_num,
+        s.type,
+        to_char(s.created_on, 'YYYY-MM-DD') as created,
+        JSON_AGG(
+                JSON_BUILD_OBJECT(
+                        'id', sq.id,
+                        'body', body,
+                        'is_reverse', is_reverse,
+                        'type', sq.type
+                    )
+            ) as questions
+    from surveys s
+    inner join surveys_questions sq on s.id = sq.survey_id
+    where s.id = ${sid}
+    group by s.id;
+    `
+}
+
+const sql_survey_delete = (sid : number)  :string =>{
+    return `
+    delete
+    from surveys
+    where id = ${sid};
+    `
+}
+
 const sql_list_init = (stu_id : string) : string => {
     return `
     SELECT 
@@ -678,5 +732,8 @@ const sql_grad_update = (stu_id : string, grad_list : GradRecord[]) : string => 
 }
 
 export { 
-    sql_survey_list
+    sql_survey_list,
+    sql_survey_retrieve,
+    sql_survey_insert,
+    sql_survey_delete
 };
