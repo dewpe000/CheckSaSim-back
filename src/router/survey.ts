@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { db } from '../database/db';
 import { sql_survey_delete, sql_survey_list, sql_survey_retrieve, sql_survey_question_insert,sql_survey_answer_insert ,sql_survey_insert } from '../utils/sql';
 import {Survey} from '../utils/interfaces';
-
+import { session } from '../app';
 const router : Router = Router();
 
 router.get('/:id', async(req : Request, res : Response) => {
@@ -58,10 +58,22 @@ router.get('/', async(req : Request, res : Response) => {
 
 router.post('/', async(req : Request, res : Response) => {
   try {
+    if (req.headers.cookie) {
+      const [cid, ] = req.headers.cookie.split(';');
+      const [, privateKey] = cid.split('=');
+      const userInfo = session[privateKey];
+      if(!userInfo) {
+        res.status(400).send("not authorized");
+        return 0;
+      }
+    } else {
+      res.status(400).send("not authorized")
+      return 0;
+    }
     let content : { results : Survey[] } = {
       results : []   
     };
-
+    
     const survey : Survey = req.body;
     const sql1 : string = sql_survey_insert(survey);
     
@@ -88,6 +100,18 @@ router.post('/', async(req : Request, res : Response) => {
 
 router.delete('/:id', async(req : Request, res : Response) => {
   try {
+    if (req.headers.cookie) {
+      const [cid, ] = req.headers.cookie.split(';');
+      const [, privateKey] = cid.split('=');
+      const userInfo = session[privateKey];
+      if(!userInfo) {
+        res.status(400).send("not authorized");
+        return 0;
+      }
+    } else {
+      res.status(400).send("not authorized")
+      return 0;
+    }
     const sid:number = parseInt(req.params.id)
     if(!Number.isInteger(sid)){
       throw 'Not Number'

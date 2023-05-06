@@ -1,4 +1,4 @@
-import { Survey, Question } from "./interfaces"
+import { Survey, Question , User} from "./interfaces"
 import { db } from "../database/db"
 /* 
 SQL Query for list
@@ -81,11 +81,21 @@ const sql_survey_delete = (sid : number)  :string =>{
     `
 }
 
+const sql_user_login = (user : User)  :string =>{
+    return `
+    select * from users 
+    where 
+    username = ${db.escapeLiteral(user.username)} and 
+    password = ${db.escapeLiteral(user.password)};
+    `
+}
+
 export { 
     sql_survey_list,
     sql_survey_retrieve,
     sql_survey_insert,
     sql_survey_question_insert,
     sql_survey_answer_insert,
-    sql_survey_delete
+    sql_survey_delete,
+    sql_user_login
 };
