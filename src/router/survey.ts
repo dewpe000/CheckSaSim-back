@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../database/db';
-import { sql_survey_delete, sql_survey_list, sql_survey_retrieve } from '../utils/sql';
+import { sql_survey_delete, sql_survey_list, sql_survey_retrieve, sql_survey_questiong_insert, sql_survey_insert } from '../utils/sql';
 import {Survey} from '../utils/interfaces';
 
 const router : Router = Router();
@@ -13,7 +13,7 @@ router.get('/:id', async(req : Request, res : Response) => {
     }
 
     let content : { results : Survey[] } = {
-      results : []   
+      results : []
     };
     
     const sql : string = sql_survey_retrieve(sid);
@@ -62,10 +62,14 @@ router.post('/', async(req : Request, res : Response) => {
       results : []   
     };
 
-    let sql : string = sql_survey_list();
-    content.results = (await db.query(sql)).rows;
-
-    res.send(content);
+    const survey : Survey = req.body;
+    const sql1 : string = sql_survey_insert(survey);
+    console.log(sql1)
+    survey.id  = (await db.query(sql1)).rows[0].id
+    
+    const sql2 : string = sql_survey_questiong_insert(survey);
+    content.results = (await db.query(sql2)).rows;
+    res.send('success');
   }   
   catch(err) {
       if(err instanceof Error) {
@@ -88,7 +92,7 @@ router.delete('/:id', async(req : Request, res : Response) => {
 
     const sql : string =sql_survey_delete(sid);
     const results = (await db.query(sql));
-
+    console.log(results);
     res.send("sucess");
   }   
   catch(err) {
