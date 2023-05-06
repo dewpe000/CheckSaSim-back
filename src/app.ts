@@ -3,16 +3,19 @@ import { db } from './database/db';
 import {router as survey} from './router/survey';
 
 
+
 const app : Express = express();
 const port : number = 80;
+const cors = require('cors');
 
 //db 연결
 db.connect();
 
 //CORS 설정
-// app.use(cors<Request>());
+
 
 //POST 요청 처리를 위한 미들웨어
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended : false }));
 
