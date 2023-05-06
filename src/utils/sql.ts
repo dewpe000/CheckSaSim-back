@@ -35,7 +35,7 @@ const sql_survey_retrieve = (sid : number)  :string =>{
     from surveys s
     inner join surveys_questions sq on s.id = sq.survey_id
     inner join survey_answers sa on s.id = sa.survey_id
-    where s.id = 2
+    where s.id = ${sid}
     group by s.id;
     `
 }
