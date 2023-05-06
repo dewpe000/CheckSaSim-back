@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../database/db';
-import { sql_survey_delete, sql_survey_list, sql_survey_retrieve, sql_survey_questiong_insert, sql_survey_insert } from '../utils/sql';
+import { sql_survey_delete, sql_survey_list, sql_survey_retrieve, sql_survey_question_insert,sql_survey_answer_insert ,sql_survey_insert } from '../utils/sql';
 import {Survey} from '../utils/interfaces';
 
 const router : Router = Router();
@@ -64,11 +64,14 @@ router.post('/', async(req : Request, res : Response) => {
 
     const survey : Survey = req.body;
     const sql1 : string = sql_survey_insert(survey);
-    console.log(sql1)
+    
     survey.id  = (await db.query(sql1)).rows[0].id
     
-    const sql2 : string = sql_survey_questiong_insert(survey);
+    const sql2 : string = sql_survey_question_insert(survey);
+    const sql3 : string = sql_survey_answer_insert(survey);
+
     content.results = (await db.query(sql2)).rows;
+    content.results = (await db.query(sql3)).rows;
     res.send('success');
   }   
   catch(err) {

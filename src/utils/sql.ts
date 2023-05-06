@@ -50,14 +50,26 @@ const sql_survey_insert = (survey : Survey)  :string =>{
     `
 }
 
-const sql_survey_questiong_insert = (survey : Survey)  :string =>{
+const sql_survey_answer_insert = (survey : Survey)  :string =>{
+    const answers = survey.answers.map((value, index, array)=>{
+        return `${db.escapeLiteral(value)}`; 
+    })
+    return `
+    insert into survey_answers
+    (survey_id, answers)
+    values 
+    (${survey.id},${db.escapeLiteral(survey.answers.join(','))})
+    `
+}
+
+const sql_survey_question_insert = (survey : Survey)  :string =>{
     let ret  = `
     insert into surveys_questions
     (body, is_reverse, survey_id, type)
     values 
     `;
     const questions = survey.questions.map((value, index, array)=>{
-        return `(${db.escapeLiteral(value.body)}, ${value.is_reverse}, ${survey.id}, ${db.escapeLiteral(value.type)})`; // 각 요소에 10을 곱한 값을 배열로 반환
+        return `(${db.escapeLiteral(value.body)}, ${value.is_reverse}, ${survey.id}, ${db.escapeLiteral(value.type)})`;
     })
     
     ret += questions.join(', ');
@@ -76,6 +88,7 @@ export {
     sql_survey_list,
     sql_survey_retrieve,
     sql_survey_insert,
-    sql_survey_questiong_insert,
+    sql_survey_question_insert,
+    sql_survey_answer_insert,
     sql_survey_delete
 };
