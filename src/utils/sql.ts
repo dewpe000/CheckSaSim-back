@@ -678,21 +678,5 @@ const sql_grad_update = (stu_id : string, grad_list : GradRecord[]) : string => 
 }
 
 export { 
-    sql_list_init,
-    sql_list_old_list,
-    sql_list_update,
-    sql_list_search,
-    sql_recommend,
-    sql_recommend_nt,
-    sql_custom_ge,
-    sql_custom_ge_score,
-    sql_custom_major,
-    sql_custom_major_score,
-    sql_details_cur,
-    sql_details_prev,
-    sql_details_prev_not_same,
-    sql_grad_init,
-    sql_grad_view,
-    sql_grad_update,
     sql_survey_list
 };
