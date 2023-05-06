@@ -23,6 +23,7 @@ const sql_survey_retrieve = (sid : number)  :string =>{
         s.week_num,
         s.type,
         to_char(s.created_on, 'YYYY-MM-DD') as created,
+        string_to_array(max(answers), ',') as answer,
         JSON_AGG(
                 JSON_BUILD_OBJECT(
                         'id', sq.id,
@@ -33,7 +34,8 @@ const sql_survey_retrieve = (sid : number)  :string =>{
             ) as questions
     from surveys s
     inner join surveys_questions sq on s.id = sq.survey_id
-    where s.id = ${sid}
+    inner join survey_answers sa on s.id = sa.survey_id
+    where s.id = 2
     group by s.id;
     `
 }
