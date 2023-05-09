@@ -12,12 +12,12 @@ router.get('/:id', async(req : Request, res : Response) => {
       throw 'Not Number'
     }
 
-    let content : { results : Survey[] } = {
-      results : []
+    let content : { results : any } = {
+      results : {}
     };
     
     const sql : string = sql_survey_retrieve(sid);
-    content.results = (await db.query(sql)).rows;
+    content.results = (await db.query(sql)).rows[0];
 
     res.send(content);
   }   
@@ -36,9 +36,8 @@ router.get('/:id', async(req : Request, res : Response) => {
 router.get('/', async(req : Request, res : Response) => {
   try {
     let content : { results : Survey[] } = {
-      results : []   
+      results : []
     };
-
     let sql : string = sql_survey_list();
     content.results = (await db.query(sql)).rows;
 
@@ -67,8 +66,8 @@ router.post('/', async(req : Request, res : Response) => {
         return 0;
       }
     } else {
-      res.status(400).send("not authorized")
-      return 0;
+     res.status(400).send("not authorized")
+     return 0;
     }
     let content : { results : Survey[] } = {
       results : []   
@@ -80,6 +79,9 @@ router.post('/', async(req : Request, res : Response) => {
     survey.id  = (await db.query(sql1)).rows[0].id
     
     const sql2 : string = sql_survey_question_insert(survey);
+
+    console.log(sql2)
+
     const sql3 : string = sql_survey_answer_insert(survey);
 
     content.results = (await db.query(sql2)).rows;
@@ -101,16 +103,16 @@ router.post('/', async(req : Request, res : Response) => {
 router.delete('/:id', async(req : Request, res : Response) => {
   try {
     if (req.headers.cookie) {
-      const [cid, ] = req.headers.cookie.split(';');
-      const [, privateKey] = cid.split('=');
-      const userInfo = session[privateKey];
-      if(!userInfo) {
-        res.status(400).send("not authorized");
-        return 0;
-      }
+     const [cid, ] = req.headers.cookie.split(';');
+     const [, privateKey] = cid.split('=');
+     const userInfo = session[privateKey];
+     if(!userInfo) {
+       res.status(400).send("not authorized");
+       return 0;
+     }
     } else {
-      res.status(400).send("not authorized")
-      return 0;
+     res.status(400).send("not authorized")
+     return 0;
     }
     const sid:number = parseInt(req.params.id)
     if(!Number.isInteger(sid)){

@@ -12,6 +12,7 @@ interface Survey{
     week_num:string;
     type:string;
     answers:string[];
+    scores:number[];
     created: string;
     questions:Question[];
 }

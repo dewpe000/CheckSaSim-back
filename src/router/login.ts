@@ -8,7 +8,6 @@ const router : Router = Router();
 router.post('/login', async(req : Request, res : Response) => {
   try 
   {
-    console.log(req.body)
     const user : User = req.body;
     const sql : string = sql_user_login(user);
     const is_exist = (await db.query(sql)).rows;
@@ -16,7 +15,11 @@ router.post('/login', async(req : Request, res : Response) => {
     if (is_exist.length!=0) {
       const privateKey = Math.floor(Math.random() * 1000000000);
       session[privateKey] = user;
-      res.setHeader('Set-Cookie', `connect.id=${privateKey}; path=/`);
+      res.cookie('connect.id', privateKey, {
+        maxAge: 1000 * 60 * 60,
+        sameSite : 'none',
+        secure: true
+      });
       res.send('login success');
     } else {
       res.status(400).send('login fail');

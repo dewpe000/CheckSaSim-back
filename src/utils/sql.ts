@@ -23,7 +23,8 @@ const sql_survey_retrieve = (sid : number)  :string =>{
         s.week_num,
         s.type,
         to_char(s.created_on, 'YYYY-MM-DD') as created,
-        string_to_array(max(answers), ',') as answer,
+        string_to_array(max(answers), ',') as answers,
+        string_to_array(max(scores), ',') as scores,
         JSON_AGG(
                 JSON_BUILD_OBJECT(
                         'id', sq.id,
@@ -53,9 +54,9 @@ const sql_survey_insert = (survey : Survey)  :string =>{
 const sql_survey_answer_insert = (survey : Survey)  :string =>{
     return `
     insert into survey_answers
-    (survey_id, answers)
+    (survey_id, answers, scores)
     values 
-    (${survey.id},${db.escapeLiteral(survey.answers.join(','))})
+    (${survey.id},${db.escapeLiteral(survey.answers.join(','))}, ${db.escapeLiteral(survey.scores.join(','))})
     `
 }
 
