@@ -2,3 +2,4 @@ db_info.json
 .env
 dist
 session_info.json
+node_modules/**
