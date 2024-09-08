@@ -1,5 +1,4 @@
 db_info.json
-node_modules
 .env
 dist
 session_info.json
